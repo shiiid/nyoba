@@ -1,0 +1,246 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Balapan Ulat Naik ke Pucuk</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--s1:#5fcbff;--s2:#dcf7ff;--card:#ffffffee;--ink:#23325a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--s1:#1b2a6b;--s2:#5a5fc4;--card:#27336aee;--ink:#eef1ff}}
+:root[data-theme="dark"]{--s1:#1b2a6b;--s2:#5a5fc4;--card:#27336aee;--ink:#eef1ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font-family:'Baloo 2','Comic Sans MS',system-ui,sans-serif;font-size:clamp(14px,1.9vh,24px);color:var(--ink);background:linear-gradient(var(--s1),var(--s2));overflow:hidden;user-select:none;position:relative}
+body::after{content:'';position:fixed;left:0;right:0;bottom:0;height:7vh;background:linear-gradient(#7ddc5a,#3fa83a);z-index:0}
+.cl{position:fixed;font-size:9vh;opacity:.85;animation:drift var(--d,70s) linear infinite;z-index:0;left:-15vw}
+@keyframes drift{to{transform:translateX(120vw)}}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer}
+#setup,#game{position:relative;z-index:1;height:100%}
+#setup{display:flex;align-items:center;justify-content:center;padding:2vh;overflow:auto}
+.card{background:var(--card);border-radius:28px;padding:2.2vh 2.4vw;max-width:980px;width:100%;box-shadow:0 12px 0 #0002;border:6px solid #fff}
+h1{margin:0;text-align:center;font-size:2.4em;font-weight:800;color:#ff7a1a;text-shadow:0 3px 0 #0002}
+.sub{text-align:center;margin:0 0 .4em;font-weight:700;opacity:.8}
+h3{margin:.7em 0 .3em}
+.chs{display:flex;gap:.6em;flex-wrap:wrap}
+.chs button{flex:1;padding:.6em 1em;border-radius:16px;border:3px solid #4d7cfe;background:#fff;color:#23325a;font-weight:700}
+.chs button.on{background:#4d7cfe;color:#fff;transform:scale(1.04)}
+#tn{display:grid;grid-template-columns:1fr 1fr;gap:.5em}
+#tn.m2 .t:nth-child(n+3){display:none}
+.t{display:flex;align-items:center;gap:.5em;background:#fff;border-radius:14px;border:3px solid var(--c);padding:.2em .6em}
+.t i{width:1.4em;height:1.4em;border-radius:50%;background:var(--c);flex:none}
+.t input{flex:1;border:0;outline:0;font:700 1em inherit;color:#23325a;background:transparent;min-width:0}
+#go,.ovb button{display:block;margin:.8em auto 0;padding:.5em 1.6em;font-size:1.5em;font-weight:800;color:#fff;background:linear-gradient(#ff9a3c,#ff5d3a);border:0;border-radius:999px;box-shadow:0 6px 0 #b5391d;animation:pulse 1.2s infinite}
+.ovb button.alt{background:#4d7cfe;box-shadow:0 6px 0 #2a4cc0;animation:none}
+@keyframes pulse{50%{transform:scale(1.06)}}
+#game{display:flex;flex-direction:column;padding:3.6vh 1vw 1vh}
+#hud{display:grid;grid-template-columns:1fr auto 1fr;gap:1vw;align-items:center;height:11vh}
+.ht{display:flex;align-items:center;justify-content:space-between;gap:.6em;background:var(--card);border:5px solid var(--c);border-radius:22px;padding:.2em .9em;font-weight:800;height:100%}
+.ht .nm{font-size:1.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--c);filter:brightness(.8)}
+.ht .sc{font-size:1.7em}
+.mid{text-align:center;line-height:1}
+#rl{font-weight:800;font-size:1em}
+.tm{font-size:2.6em;font-weight:800;background:#fff;color:#23325a;border-radius:20px;padding:0 .5em;border:5px solid #ffb020;display:inline-block}
+.tm.low{color:#fff;background:#ff4d5e;animation:pulse .5s infinite}
+.mn{display:block;margin:.1em auto 0;border:0;background:#fff8;border-radius:10px;padding:0 .6em;font-weight:700;color:var(--ink)}
+#stage{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:1vw;margin:1vh 0 7vh}
+.panel{position:relative;overflow-y:auto;background:var(--card);border:5px solid var(--c);border-radius:22px;touch-action:pan-y;scroll-behavior:smooth;transition:filter .4s}
+.panel.lock{filter:blur(14px);pointer-events:none}
+.th{position:sticky;top:0;z-index:2;background:var(--c);color:#fff;font-weight:800;padding:.35em .8em;text-shadow:0 2px 0 #0003}
+.row{display:grid;grid-template-columns:2.2em 1fr;gap:.3em .4em;padding:.6em .7em;background:#fff;color:#23325a;border-bottom:3px dashed #c8d6f0}
+.row:nth-child(odd){background:#f1f8ff}
+.row b{background:var(--c);color:#fff;border-radius:50%;width:2em;height:2em;display:grid;place-items:center}
+.row p{margin:0;font-size:1.3em;font-weight:700;align-self:center}
+.ob{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:.5em}
+.ob button{min-height:3em;border-radius:14px;border:3px solid var(--c);background:#fff;color:#23325a;font-weight:800;font-size:1.05em;transition:.15s}
+.ob button:active{transform:scale(.95)}
+.row.done button{pointer-events:none;opacity:.55}
+.row.done button.right{background:#2fbf71;border-color:#1e8f53;color:#fff;opacity:1}
+.row.done button.wrong{background:#ff4d5e;border-color:#c52a3a;color:#fff;opacity:1;animation:shk .4s}
+#board{position:relative;display:grid;grid-template-columns:repeat(2,1fr);border-radius:22px;border:5px solid #fff;overflow:hidden;background:linear-gradient(#a9e8ff,#e4ffd0 75%,#9bdc78)}
+#board::before{content:'🏁 PUCUK 🏁';position:absolute;inset:0 0 auto;height:9%;display:grid;place-items:center;background:radial-gradient(#5ccf4c,#2f9b3a);color:#fff;font-weight:800;z-index:2;letter-spacing:.1em}
+.lane{position:relative;--c:#999}
+.lane::before{content:'';position:absolute;left:50%;width:20px;transform:translateX(-50%);top:9%;bottom:8%;background:linear-gradient(90deg,#7a4b24,#b07a40,#7a4b24);border-radius:8px}
+.lane.act{background:linear-gradient(#fff6,#fff1);box-shadow:inset 0 0 0 3px var(--c)}
+.lane.spec .worm{opacity:.5;filter:saturate(.6)}
+.bud{position:absolute;top:8%;left:50%;transform:translateX(-50%);font-style:normal;font-size:3.2em;z-index:1;animation:sway 2s ease-in-out infinite}
+.track{position:absolute;left:0;right:0;top:22%;bottom:9%}
+.worm{position:absolute;left:28%;width:44%;bottom:calc(var(--p) * 1%);transition:bottom .75s cubic-bezier(.34,1.56,.64,1);z-index:1}
+.w{transform-origin:50% 100%}
+.worm svg{display:block;width:100%;overflow:visible;transform-origin:50% 100%;animation:sway 1.6s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(4deg)}0%,100%{transform:rotate(-4deg)}}
+.seg{animation:wig .9s ease-in-out infinite;animation-delay:calc(var(--i) * -.18s)}
+@keyframes wig{0%,100%{transform:translateX(-3px)}50%{transform:translateX(3px)}}
+.worm.up .w{animation:hop .7s}
+.worm.down .w{animation:shk .5s}
+.worm.win .w{animation:dance .6s infinite}
+@keyframes hop{0%{transform:none}25%{transform:scale(1.3,.7)}55%{transform:scale(.8,1.25) translateY(-14px)}100%{transform:none}}
+@keyframes shk{20%{transform:translateX(-8px) rotate(-8deg)}40%{transform:translateX(8px) rotate(8deg)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+@keyframes dance{50%{transform:translateY(-16px) rotate(10deg) scale(1.1)}0%,100%{transform:rotate(-10deg)}}
+.mh,.ms,.sw{display:none}
+.worm.happy .mh,.worm.sad .ms,.worm.sad .sw{display:block}
+.worm.happy .mn,.worm.sad .mn,.worm.win .mn{display:none}
+.worm.win .mh{display:block}
+.lb{position:absolute;bottom:1%;left:0;right:0;text-align:center;font-weight:800;font-size:.8em;padding:0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#23325a}
+.lane.act .lb{background:var(--c);color:#fff;border-radius:8px;margin:0 2px;font-size:.9em}
+.pop{position:absolute;left:50%;transform:translateX(-50%);font-size:1.5em;font-weight:800;white-space:nowrap;animation:fl 1s forwards;z-index:3;text-shadow:0 2px 0 #fff}
+.pop.g{color:#1e9c55}.pop.r{color:#e02b3d}
+@keyframes fl{to{margin-bottom:60px;opacity:0}}
+#ov{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;background:#14205a88;backdrop-filter:blur(4px)}
+.cd{font-size:30vh;font-weight:800;color:#fff;text-shadow:0 8px 0 #ff7a1a,0 0 40px #ffd54a;animation:zoom .9s}
+@keyframes zoom{0%{transform:scale(.2);opacity:0}40%{transform:scale(1.2);opacity:1}100%{transform:scale(1)}}
+.box{background:var(--card);border:6px solid #fff;border-radius:30px;padding:2vh 3vw;text-align:center;max-width:90vw;animation:zoom .6s}
+.box h2{margin:0;font-size:2.8em;color:#ff7a1a}
+.tro{font-size:7em;line-height:1;animation:dance .8s infinite}
+.stats{display:flex;gap:1em;justify-content:center;margin:.5em 0}
+.stat{background:#fff;color:#23325a;border:4px solid var(--c);border-radius:16px;padding:.3em 1em}
+.stat b{display:block;font-size:1.3em}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:20}
+.vs{display:flex;align-items:center;justify-content:center;gap:1.2em;margin:.3em 0}
+.vs>span{font-size:2.4em;font-weight:800;color:#ff7a1a}
+.vt{background:#fff;color:#23325a;border:5px solid var(--c);border-radius:20px;padding:.3em 1em;min-width:9em}
+.vt svg{width:4em;display:block;margin:0 auto}
+.vt b{display:block;font-size:1.4em}
+.br{display:flex;gap:1em;align-items:stretch;margin:.6em 0;text-align:left}
+.bc{display:flex;flex-direction:column;justify-content:space-around;gap:.5em}
+.bc h4{margin:0;text-align:center;font-size:.9em}
+.bm{background:#fff;color:#23325a;border:3px solid #c8d6f0;border-radius:12px;padding:.2em .5em;min-width:8.5em}
+.bm.cur{border-color:#ff7a1a;box-shadow:0 0 0 4px #ffd54a;animation:pulse 1.2s infinite}
+.bm div{display:flex;align-items:center;gap:.4em;font-weight:700;padding:.1em 0}
+.bm i{width:.9em;height:.9em;border-radius:50%;background:var(--c);flex:none}
+.bm .win{color:#1e9c55}.bm .lose{opacity:.4;text-decoration:line-through}
+.lb{font-size:1.2em!important}
+#fs{position:fixed;top:.5vh;right:.6vw;z-index:30;border:0;background:#fffc;border-radius:8px;font-size:.8em;padding:0 .8em;font-weight:700;color:#23325a;box-shadow:0 2px 0 #0003}
+#mbar,#mbar2{position:fixed;top:.5vh;left:.6vw;z-index:5;border:0;background:#fffa;border-radius:8px;font-size:.75em;padding:0 .7em;font-weight:700;color:#23325a}
+.pr{display:flex;gap:.4em;justify-content:center;margin-top:.15em}
+.pr button{border:0;background:#fffd;border-radius:10px;padding:0 .8em;font-weight:700;color:#23325a;box-shadow:0 2px 0 #0003}
+</style></head><body>
+<i class="cl" style="top:4%;--d:80s">☁️</i><i class="cl" style="top:30%;--d:110s;animation-delay:-40s">☁️</i><i class="cl" style="top:60%;--d:95s;animation-delay:-70s">☁️</i>
+<section id="setup"><div class="card">
+<h1>🐛 Balapan Ulat Naik ke Pucuk 🌱</h1><p class="sub">Matematika Kelas VIII · PLSV</p>
+<h3>Mode</h3><div class="chs" data-k="mode"><button data-v="2" class="on">⚔️ 2 Tim</button><button data-v="8">🏆 Turnamen 8 Tim</button></div>
+<h3>Nama Tim (bisa diubah)</h3><div id="tn" class="m2"></div>
+<h3>Jenis Soal</h3><div class="chs" data-k="kind"><button data-v="kal">Kalimat Terbuka &amp; Tertutup</button><button data-v="him">Himpunan Penyelesaian</button><button data-v="mix" class="on">Campur</button></div>
+<h3>Waktu per Pertandingan</h3><div class="chs" data-k="dur"><button data-v="60">60 dtk</button><button data-v="90" class="on">90 dtk</button><button data-v="120">2 menit</button><button data-v="180">3 menit</button></div>
+<h3>Jarak ke Pucuk</h3><div class="chs" data-k="goal"><button data-v="10" class="on">10 langkah</button><button data-v="15">15 langkah</button><button data-v="20">20 langkah</button></div>
+<button id="go">MULAI! 🚀</button></div></section>
+<section id="game" hidden><button id="mbar" onclick="ask('menu')">☰ Menu</button>
+<div id="hud"><div class="ht" id="h0"></div><div class="mid"><div id="rl"></div><div id="tm" class="tm">0:00</div><div class="pr"><button onclick="pauseG()">⏸ Jeda</button><button onclick="ask('ulang')">🔁 Ulang</button></div></div><div class="ht" id="h1"></div></div>
+<div id="stage"><div class="panel" id="p0"></div><div id="board"></div><div class="panel" id="p1"></div></div></section>
+<button id="fs" onclick="toggleFS()">⛶ Layar Penuh</button><div id="ov"></div><canvas id="fx"></canvas>
+<script>
+const $=s=>document.querySelector(s),R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,P=a=>a[R(0,a.length-1)],sh=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const COL=['#ff5d73','#ffa21f','#6cc92f','#1fc4c4','#4d7cfe','#a855f7','#ff7ac8','#9a6b4b'];
+const DEF=['Tim Merah','Tim Jingga','Tim Hijau','Tim Tosca','Tim Biru','Tim Ungu','Tim Pink','Tim Cokelat'];
+const cfg={mode:2,kind:'mix',dur:90,goal:10};let names=[...DEF],M,Tn,run=false,tmr,end=0,tok=0;
+$('#tn').innerHTML=DEF.map((n,i)=>`<label class="t" style="--c:${COL[i]}"><i></i><input class="tn" maxlength="16" value="${n}"></label>`).join('');
+document.querySelectorAll('.chs').forEach(g=>g.onclick=e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');const v=b.dataset.v;cfg[g.dataset.k]=isNaN(+v)?v:+v;if(g.dataset.k=='mode')$('#tn').className='m'+v});
+// ---------- soal ----------
+const K=(q,a)=>({q,o:['Kalimat Terbuka','Kalimat Tertutup'],a});
+const OPEN=['Ia siswa kelas VIII','Kota itu terletak di Pulau Jawa','x adalah bilangan prima','Dia suka makan bakso','y adalah bilangan genap','Bilangan itu habis dibagi 5','Hewan itu hidup di air','n adalah faktor dari 12','Ia lahir pada bulan Mei','p adalah bilangan kuadrat','x lebih dari 7','Ia memakai seragam biru'];
+const CLOSED=['Semarang adalah ibu kota Provinsi Jawa Tengah','Segitiga memiliki tiga sisi','12 habis dibagi 4','7 adalah bilangan ganjil','Ikan hiu bernapas dengan insang','Persegi memiliki empat sisi yang sama panjang','Satu minggu terdiri dari tujuh hari','9 adalah kelipatan 3','Matahari terbit dari timur','Kucing termasuk hewan mamalia','Bumi mengelilingi Matahari','2 adalah bilangan prima','Pulau Jawa terletak di Indonesia','Indonesia merdeka pada tahun 1945'];
+function gKal(){const v=P('xyabnmpt'.split('')),a=R(2,15),b=R(2,12);
+if(Math.random()<.5){const t=R(0,10);
+if(t==0)return K(`${v} + ${a} = ${a+R(3,25)}`,0);
+if(t==1)return K(`${R(2,9)}${v} = ${R(10,60)}`,0);
+if(t==2)return K(`${v} − ${R(1,9)} > ${R(2,20)}`,0);
+if(t==3)return K(`${R(2,5)}${v} + ${R(1,9)} < ${R(15,40)}`,0);
+if(t==4)return K(`${v} ÷ ${R(2,5)} ≥ ${R(2,12)}`,0);
+if(t==5)return K(`Suatu bilangan bila ditambah ${a} menjadi ${a+R(3,25)}`,0);
+if(t==6)return K(`Suatu bilangan bila dikurangi ${R(1,9)} menjadi ${R(2,20)}`,0);
+if(t==7)return K(`Suatu bilangan bila dikalikan ${R(2,9)} hasilnya ${R(10,60)}`,0);
+if(t==8)return K(`Dua kali suatu bilangan ditambah ${R(1,9)} sama dengan ${R(15,40)}`,0);
+if(t==9)return K(`Suatu bilangan bila dibagi ${R(2,5)} hasilnya lebih dari ${R(2,12)}`,0);
+return K(P(OPEN),0)}
+const t=R(0,5);
+if(t==0)return K(`${a} + ${b} = ${a+b}`,1);
+if(t==1)return K(`${a} × ${b} = ${a*b}`,1);
+if(t==2)return K(`${a+b} − ${b} = ${a}`,1);
+if(t==3)return K(`${a} + ${b} > ${a+b-R(1,5)}`,1);
+if(t==4)return K(`${a*b} ÷ ${b} = ${a}`,1);
+return K(P(CLOSED),1)}
+const rg=(a,b,f=()=>true)=>{const r=[];for(let i=a;i<=b;i++)f(i)&&r.push(i);return r};
+const pr=n=>n>1&&rg(2,Math.sqrt(n)|0).every(d=>n%d);
+const B=a=>`{${a.join(', ')}}`;
+function gHim(){let q,c,d;const t=R(0,11),D=' dengan x anggota bilangan ';
+if(t==0){const n=P([8,10,12,14,16,18]);q=`Himpunan bilangan genap positif kurang dari ${n}`;c=rg(2,n-2,i=>i%2==0);d=P([[...c,n],[0,...c]])}
+else if(t==1){const a=R(2,15),b=R(a+2,40);q=`Himpunan penyelesaian dari x + ${a} = ${b},${D}asli`;c=[b-a];d=[b+a]}
+else if(t==2){const a=R(2,12),b=R(1,20);q=`Himpunan penyelesaian dari x − ${a} = ${b},${D}cacah`;c=[a+b];d=[Math.abs(b-a)]}
+else if(t==3){const a=R(2,10),b=R(a+4,25);q=`Himpunan penyelesaian dari x + ${a} < ${b},${D}asli`;c=rg(1,b-a-1);d=rg(1,b-a)}
+else if(t==4){const m=P([3,4,5]),n=m*R(3,4);q=`Himpunan kelipatan ${m} kurang dari ${n}, anggota bilangan asli`;c=rg(m,n-m,i=>i%m==0);d=[...c,n]}
+else if(t==5){const n=P([10,12,14,16,20]);q=`Himpunan bilangan prima kurang dari ${n}`;c=rg(2,n-1,pr);d=P([[1,...c],c.slice(1)])}
+else if(t==6){const a=R(2,9),x=R(2,9),b=a*x;q=`Himpunan penyelesaian dari ${a}x = ${b},${D}cacah`;c=[x];d=[b-a==x?x+1:b-a]}
+else if(t==7){const n=P([9,11,13]);q=`Himpunan bilangan ganjil lebih dari 2 dan kurang dari ${n}`;c=rg(3,n-1,i=>i%2==1);d=[1,...c]}
+else if(t==8){const n=R(4,7);q=`Himpunan bilangan cacah kurang dari ${n}`;c=rg(0,n-1);d=rg(1,n-1)}
+else if(t==9){const n=P([12,18,20,24,30]);q=`Himpunan faktor dari ${n}`;c=rg(1,n,i=>n%i==0);d=P([c.slice(0,-1),c.slice(1)])}
+else if(t==10){const x=R(2,9),a=R(1,9),b=2*x+a;q=`Himpunan penyelesaian dari 2x + ${a} = ${b},${D}cacah`;c=[x];d=[b-a]}
+else{const a=R(2,10),b=R(a+3,25);q=`Himpunan penyelesaian dari x + ${a} ≤ ${b},${D}asli`;c=rg(1,b-a);d=rg(1,b-a-1)}
+const o=[B(c),B(d)];if(o[0]==o[1])return gHim();q+=' adalah …';
+return Math.random()<.5?{q,o:[o[1],o[0]],a:1}:{q,o,a:0}}
+// ---------- ulat ----------
+const worm=c=>`<svg viewBox="0 0 60 112"><g stroke="#0004" stroke-width="2"><g class="seg" style="--i:3"><circle cx="30" cy="100" r="11" fill="${c}"/><ellipse cx="30" cy="103" rx="6" ry="4" fill="#fff5" stroke="none"/></g><g class="seg" style="--i:2"><circle cx="30" cy="82" r="13" fill="${c}"/><ellipse cx="30" cy="85" rx="7" ry="5" fill="#fff5" stroke="none"/></g><g class="seg" style="--i:1"><circle cx="30" cy="63" r="14" fill="${c}"/><ellipse cx="30" cy="66" rx="8" ry="5" fill="#fff5" stroke="none"/></g></g><g class="seg" style="--i:0"><path d="M24 16 L17 3M36 16 L43 3" stroke="#23325a" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="17" cy="3" r="3.5" fill="#ffd54a"/><circle cx="43" cy="3" r="3.5" fill="#ffd54a"/><circle cx="30" cy="36" r="24" fill="${c}" stroke="#0004" stroke-width="2"/><circle cx="21" cy="32" r="7.5" fill="#fff"/><circle cx="39" cy="32" r="7.5" fill="#fff"/><circle cx="22" cy="33" r="3.8" fill="#23325a"/><circle cx="40" cy="33" r="3.8" fill="#23325a"/><circle cx="23" cy="31.5" r="1.3" fill="#fff"/><circle cx="41" cy="31.5" r="1.3" fill="#fff"/><circle cx="13" cy="44" r="4" fill="#ff7a9a" opacity=".6"/><circle cx="47" cy="44" r="4" fill="#ff7a9a" opacity=".6"/><path class="mn" d="M23 45 Q30 52 37 45" stroke="#23325a" stroke-width="2.5" fill="none" stroke-linecap="round"/><path class="mh" d="M22 43 Q30 60 38 43Z" fill="#7a1f2b" stroke="#23325a" stroke-width="2"/><path class="ms" d="M23 51 Q30 43 37 51" stroke="#23325a" stroke-width="2.5" fill="none" stroke-linecap="round"/><path class="sw" d="M52 22 q4 7 0 10 q-4-3 0-10Z" fill="#6ad4ff"/></g></svg>`;
+// ---------- alur ----------
+function begin(){names=[...document.querySelectorAll('.tn')].map((e,i)=>e.value.trim()||DEF[i]);
+if(cfg.mode==2){Tn=null;play(0,1)}else{const x=sh([0,1,2,3,4,5,6,7]);const q=[[x[0],x[1]],[x[2],x[3]],[x[4],x[5]],[x[6],x[7]]],e=()=>({p:[-1,-1],w:-1});Tn={r:q,i:0,w:[],rd:0,R:[q.map(p=>({p:[...p],w:-1})),[e(),e()],[e()]]};play(...Tn.r[0])}}
+$('#go').onclick=begin;
+const rname=()=>Tn?({4:'Perempat Final',2:'Semi Final',1:'Final'}[Tn.r.length]+` · ${Tn.i+1}/${Tn.r.length}`):'Pertandingan';
+function ov(h){const o=$('#ov');o.innerHTML=h||'';o.style.display=h?'flex':'none'}
+function play(a,b){const types=Array.from({length:50},()=>cfg.kind=='mix'?P(['kal','him']):cfg.kind);
+M={t:[a,b],step:[0,0],sc:[0,0],ans:[Array(50).fill(null),Array(50).fill(null)],qs:[0,1].map(()=>{const seen=new Set();return types.map(t=>{let q,n=0;do{q=t=='kal'?gKal():gHim()}while(seen.has(q.q)&&++n<40);seen.add(q.q);return q})})};
+$('#setup').hidden=true;$('#game').hidden=false;$('#rl').textContent=rname();$('#tm').textContent=`${cfg.dur/60|0}:${String(cfg.dur%60).padStart(2,'0')}`;$('#tm').classList.remove('low');
+[0,1].forEach(s=>{const p=$('#p'+s);p.style.setProperty('--c',COL[M.t[s]]);p.classList.add('lock');
+p.innerHTML=`<div class="th">${esc(names[M.t[s]])} · gulir ↕ untuk soal lain</div>`+M.qs[s].map((q,i)=>`<div class="row" id="r${s}_${i}"><b>${i+1}</b><p>${q.q}</p><div class="ob"><button data-s="${s}" data-i="${i}" data-o="0">${q.o[0]}</button><button data-s="${s}" data-i="${i}" data-o="1">${q.o[1]}</button></div></div>`).join('');p.scrollTop=0});
+$('#board').innerHTML=M.t.map(k=>{const c=COL[k];return `<div class="lane act" style="--c:${c}"><i class="bud">🌱</i><div class="track" id="tk${k}"><div class="worm" id="w${k}" style="--p:0"><div class="w">${worm(c)}</div></div></div><span class="lb">${esc(names[k])}</span></div>`}).join('');
+hud();tok++;run=false;paused=false;prep()}
+function hud(){[0,1].forEach(s=>{const k=M.t[s],h=$('#h'+s);h.style.setProperty('--c',COL[k]);h.innerHTML=`<span class="nm">${esc(names[k])}</span><span class="sc">⭐ ${M.sc[s]}</span><span>🐛 ${M.step[s]}/${cfg.goal}</span>`})}
+async function countdown(){const id=++tok;run=false;for(const n of [3,2,1,'GO!']){if(id!=tok)return;ov(`<div class="cd">${n}</div>`);beep(n=='GO!');await sleep(n=='GO!'?650:900)}
+if(id!=tok)return;ov();run=true;document.querySelectorAll('.panel').forEach(p=>p.classList.remove('lock'));end=Date.now()+cfg.dur*1000;clearInterval(tmr);tick();tmr=setInterval(tick,100)}
+function tick(){const l=Math.max(0,end-Date.now()),s=Math.ceil(l/1000);$('#tm').textContent=`${s/60|0}:${String(s%60).padStart(2,'0')}`;$('#tm').classList.toggle('low',s<=10);if(l<=0)finish(-1)}
+$('#stage').onclick=e=>{const b=e.target.closest('button[data-s]');if(b)answer(+b.dataset.s,+b.dataset.i,+b.dataset.o)};
+function answer(s,i,o){if(!run||M.ans[s][i]!==null)return;const q=M.qs[s][i],ok=o==q.a;M.ans[s][i]=ok;
+const r=$(`#r${s}_${i}`),bt=r.querySelectorAll('button');r.classList.add('done');bt[q.a].classList.add('right');if(!ok)bt[o].classList.add('wrong');
+if(ok){M.sc[s]++;M.step[s]=Math.min(cfg.goal,M.step[s]+1)}else M.step[s]=Math.max(0,M.step[s]-1);
+move(s,ok);beep(ok);hud();
+
+if(M.step[s]>=cfg.goal)finish(s)}
+function move(s,ok){const k=M.t[s],w=$('#w'+k),c=['up','down','happy','sad'];w.classList.remove(...c);void w.offsetWidth;w.style.setProperty('--p',M.step[s]*100/cfg.goal);w.classList.add(ok?'up':'down',ok?'happy':'sad');clearTimeout(w.t);w.t=setTimeout(()=>w.classList.remove(...c),900);
+const p=document.createElement('b');p.className='pop '+(ok?'g':'r');p.textContent=ok?'+1 ⬆':'−1 ⬇';p.style.bottom=`calc(${M.step[s]*100/cfg.goal}% + 16%)`;$('#tk'+k).append(p);setTimeout(()=>p.remove(),1000)}
+function finish(w){if(!run)return;run=false;clearInterval(tmr);
+if(w<0){const a=M.step[0]*1000+M.sc[0],b=M.step[1]*1000+M.sc[1];w=a==b?-1:a>b?0:1}
+if(w>=0)$('#w'+M.t[w]).classList.add('win');
+setTimeout(()=>result(w),1400)}
+function result(w){const ids=M.t,nm=s=>esc(names[ids[s]]);let h,btn;
+const stats=[0,1].map(s=>`<div class="stat" style="--c:${COL[ids[s]]}"><b>${nm(s)}</b>⭐ ${M.sc[s]} benar · ${M.ans[s].filter(v=>v===false).length} salah</div>`).join('');
+const rep=`<button onclick="play(${ids[0]},${ids[1]})">Tanding Ulang 🔁</button>`;
+if(w<0){h=`<div class="tro">🤝</div><h2>Seri!</h2>`;btn=rep}
+else{h=`<div class="tro">🏆</div><h2>${nm(w)} Menang!</h2>`;boom();
+if(!Tn)btn=`<button onclick="play(${ids[0]},${ids[1]})">Main Lagi 🔁</button><button class="alt" onclick="menu()">Menu</button>`;
+else{Tn.R[Tn.rd][Tn.i].w=ids[w];const nx=Tn.R[Tn.rd+1];if(nx)nx[Tn.i>>1].p[Tn.i&1]=ids[w];Tn.w.push(ids[w]);Tn.i++;
+if(Tn.i<Tn.r.length)btn=`<button onclick="nextM()">Pertandingan Berikutnya ▶</button>`;
+else if(Tn.w.length>1)btn=`<button onclick="nextM()">Lanjut ke ${Tn.w.length==4?'Semi Final':'Final'} ▶</button>`;
+else{h=`<div class="tro">👑</div><h2>Juara Turnamen: ${nm(w)}!</h2>`;btn=`<button class="alt" onclick="menu()">Menu Utama</button>`;setTimeout(boom,900)}
+if(Tn.w.length&&Tn.i<=Tn.r.length&&Tn.w.length>1||Tn.i<Tn.r.length)h+=`<p>Lolos: ${Tn.w.map(i=>esc(names[i])).join(', ')}</p>`}}
+ov(`<div class="box">${h}<div class="stats">${stats}</div><div class="ovb">${btn}</div></div>`)}
+function nextM(){if(Tn.i>=Tn.r.length){Tn.rd++;Tn.r=Tn.w.reduce((r,x,i)=>i%2?r:[...r,[x,Tn.w[i+1]]],[]);Tn.w=[];Tn.i=0}play(...Tn.r[Tn.i])}
+function bracket(){const T=['Perempat Final','Semi Final','Final'];return `<div class="br">`+Tn.R.map((rd,ri)=>`<div class="bc"><h4>${T[ri]}</h4>${rd.map((m,mi)=>`<div class="bm ${ri==Tn.rd&&mi==Tn.i?'cur':''}">${[0,1].map(j=>{const t=m.p[j];return t<0?`<div><i style="--c:#ccc"></i>?</div>`:`<div class="${m.w<0?'':m.w==t?'win':'lose'}" style="--c:${COL[t]}"><i></i>${esc(names[t])}</div>`}).join('')}</div>`).join('')}</div>`).join('')+`</div>`}
+function prep(){const[a,b]=M.t;ov(`<div class="box"><h2>${rname()}</h2><p style="margin:.2em">Pertandingan berikutnya:</p><div class="vs"><div class="vt" style="--c:${COL[a]}">${worm(COL[a])}<b>${esc(names[a])}</b></div><span>VS</span><div class="vt" style="--c:${COL[b]}">${worm(COL[b])}<b>${esc(names[b])}</b></div></div>${Tn?bracket():''}<div class="ovb"><button onclick="countdown()">Siap! Mulai ▶</button></div></div><button id="mbar2" onclick="askMenu()">☰ Menu</button>`)}
+let paused=false,rem=0;
+const lockP=f=>document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('lock',f));
+function pbox(){return `<div class="box"><h2>⏸ Dijeda</h2><p>Waktu dan skor tetap tersimpan</p><div class="ovb"><button onclick="resumeG()">▶ Lanjutkan</button><button class="alt" onclick="ask('ulang')">🔁 Ulang Pertandingan</button><button class="alt" onclick="ask('menu')">☰ Menu Utama</button></div></div>`}
+function pauseG(){if(!run)return;run=false;paused=true;rem=Math.max(0,end-Date.now());clearInterval(tmr);lockP(true);ov(pbox())}
+function resumeG(){if(!paused)return;paused=false;ov();lockP(false);run=true;end=Date.now()+rem;clearInterval(tmr);tick();tmr=setInterval(tick,100)}
+function ask(k){if(run)pauseG();if(!paused)return;ov(`<div class="box"><h2>Yakin?</h2><p>${k=='menu'?'Kembali ke menu utama. Semua progres akan hilang.':'Pertandingan ini diulang dari awal. Skor ulat direset dan soal diganti.'}</p><div class="ovb"><button class="alt" onclick="ov(pbox())">Batal</button><button onclick="yes('${k}')">Ya</button></div></div>`)}
+function yes(k){paused=false;if(k=='menu')menu();else play(M.t[0],M.t[1])}
+function askMenu(){ov(`<div class="box"><h2>Yakin?</h2><p>Kembali ke menu utama. Semua progres akan hilang.</p><div class="ovb"><button class="alt" onclick="prep()">Batal</button><button onclick="menu()">Ya</button></div></div>`)}
+function menu(){paused=false;tok++;run=false;clearInterval(tmr);ov();$('#game').hidden=true;$('#setup').hidden=false;fx=[]}
+// ---------- efek ----------
+const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+function upFS(){$('#fs').textContent=fsEl()?'⮌ Keluar Layar Penuh':'⛶ Layar Penuh'}
+function fsFail(){$('#fs').textContent='Layar penuh tidak didukung di sini';setTimeout(upFS,3000)}
+function toggleFS(){const d=document.documentElement;try{if(fsEl())(document.exitFullscreen||document.webkitExitFullscreen).call(document);else{const r=(d.requestFullscreen||d.webkitRequestFullscreen).call(d);if(r&&r.catch)r.catch(fsFail)}}catch(e){fsFail()}}
+['fullscreenchange','webkitfullscreenchange'].forEach(e=>document.addEventListener(e,upFS));
+let AC,fx=[],raf;
+function beep(ok){try{AC=AC||new AudioContext();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.connect(g);g.connect(AC.destination);o.type='triangle';o.frequency.setValueAtTime(ok?740:180,t);if(ok)o.frequency.setValueAtTime(990,t+.09);g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.28);o.start();o.stop(t+.3)}catch(e){}}
+function boom(){const c=$('#fx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+fx=fx.concat(Array.from({length:180},()=>({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*28,vy:-Math.random()*24-4,s:R(7,15),c:P(COL),r:Math.random()*6,vr:(Math.random()-.5)*.4,l:R(150,260)})));
+cancelAnimationFrame(raf);(function f(){x.clearRect(0,0,c.width,c.height);fx=fx.filter(p=>p.l-->0);fx.forEach(p=>{p.vy+=.45;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/3,p.s,p.s*.6);x.restore()});if(fx.length)raf=requestAnimationFrame(f)})()}
+</script></body></html>
